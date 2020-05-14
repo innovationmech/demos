@@ -29,10 +29,10 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
         /**
          * myUrl表示 你前端到时要对应url映射
          */
-        registry.addEndpoint("/myUrl")
+        registry.addEndpoint("/websocket")
                 .setAllowedOrigins("*")
-                .setHandshakeHandler(principalHandshakeHandler)
-                .withSockJS();
+                .setHandshakeHandler(principalHandshakeHandler);
+//                .withSockJS();
     }
 
     @Override

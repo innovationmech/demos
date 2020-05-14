@@ -31,7 +31,6 @@ public class WebSocketDecoratorFactory implements WebSocketHandlerDecoratorFacto
                     SocketManager.add(principal.getName(), session);
                 }
 
-
                 super.afterConnectionEstablished(session);
             }
 
