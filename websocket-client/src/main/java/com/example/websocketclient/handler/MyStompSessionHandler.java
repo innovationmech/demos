@@ -12,7 +12,8 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         log.info("New session established : " + session.getSessionId());
-        session.subscribe("/user/queue/sendUser", this);
+        session.subscribe("/queue/sendUser", this);
+        session.subscribe("/topic/sendTopic", this);
         log.info("Subscribed to /queue/sendUser");
         session.send("/sendMyUser", getSampleMessage());
         log.info("Message sent to websocket server");
@@ -32,7 +33,9 @@ public class MyStompSessionHandler extends StompSessionHandlerAdapter {
     public void handleFrame(StompHeaders headers, Object payload) {
 //        Message msg = (Message) payload;
 //        log.info("Received : " + msg.getText() + " from : " + msg.getKey());
-        log.info("Received : " + payload);
+//        log.info("Received : " + payload);
+        Message msg = (Message) payload;
+        log.info("Received: " + msg.getText() + " from :" + msg.getKey());
     }
 
     /**

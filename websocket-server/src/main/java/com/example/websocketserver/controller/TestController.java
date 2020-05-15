@@ -2,6 +2,7 @@ package com.example.websocketserver.controller;
 
 
 import com.example.websocketserver.manager.SocketManager;
+import com.example.websocketserver.message.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -24,14 +25,19 @@ public class TestController {
      * 服务器指定用户进行推送,需要前端开通 var socket = new SockJS(host+'/myUrl' + '?token=1234');
      */
     @RequestMapping("/sendUser")
-    public void sendUser(String token) {
+    public void sendUser(String token, String text) {
         log.info("token = {} ,对其发送您好", token);
         WebSocketSession webSocketSession = SocketManager.get(token);
         if (webSocketSession != null) {
             /**
              * 主要防止broken pipe
              */
-            template.convertAndSendToUser(token, "/queue/sendUser", "您好");
+//            template.convertAndSendToUser(token, "/queue/sendUser", "您好");
+            Message msg = new Message();
+            msg.setKey(token);
+            msg.setText(text);
+//            template.convertAndSend("/queue/sendUser", msg);
+            template.convertAndSendToUser(token, "/queue/sendUser", msg);
         }
 
     }
@@ -41,7 +47,10 @@ public class TestController {
      */
     @RequestMapping("/sendTopic")
     public void sendTopic() {
-        template.convertAndSend("/topic/sendTopic", "大家晚上好");
+        Message msg = new Message();
+        msg.setKey("123");
+        msg.setText("good night");
+        template.convertAndSend("/topic/sendTopic", msg);
 
     }
 
@@ -80,7 +89,11 @@ public class TestController {
         WebSocketSession webSocketSession = SocketManager.get(map.get("key"));
         if (webSocketSession != null) {
             log.info("sessionId = {}", webSocketSession.getId());
-            template.convertAndSendToUser(map.get("key"), "/queue/sendUser", map.get("text"));
+//            template.convertAndSendToUser(map.get("key"), "/queue/sendUser", map.get("text"));
+            Message msg = new Message();
+            msg.setKey("456");
+            msg.setText("I've received");
+            template.convertAndSend("/queue/sendUser", msg);
         }
     }
 
