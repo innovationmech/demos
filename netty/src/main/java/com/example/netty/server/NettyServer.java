@@ -1,4 +1,4 @@
-package com.example.netty;
+package com.example.netty.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelHandlerContext;
@@ -28,21 +28,21 @@ public class NettyServer {
         serverBootstrap
                 .group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
-                .handler(new ChannelInboundHandlerAdapter() {
-                    @Override
-                    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                        super.channelActive(ctx);
-                    }
-                })
-                .attr(AttributeKey.newInstance("serverName"), "nettyServer")
-                .childAttr(AttributeKey.newInstance("clientKey"), "clientValue")
+//                .handler(new ChannelInboundHandlerAdapter() {
+//                    @Override
+//                    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+//                        super.channelActive(ctx);
+//                    }
+//                })
+//                .attr(AttributeKey.newInstance("serverName"), "nettyServer")
+//                .childAttr(AttributeKey.newInstance("clientKey"), "clientValue")
                 .option(ChannelOption.SO_BACKLOG, 1024)
                 .childOption(ChannelOption.SO_KEEPALIVE, true) // 是否开启TCP底层心跳机制，true为开启
                 .childOption(ChannelOption.TCP_NODELAY, true) // true表示关闭，如果要求高实时性就关闭
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
-                        System.out.println(nioSocketChannel.attr(clientKey).get());
+                        nioSocketChannel.pipeline().addLast(new FirstServerHandler());
                     }
                 });
         bind(serverBootstrap, BEGIN_PORT);

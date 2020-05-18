@@ -1,9 +1,10 @@
-package com.example.netty;
+package com.example.netty.client;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Future;
@@ -15,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 public class NettyClient {
 
     private static final int MAX_RETRY = 5;
+    private static final String HOST = "127.0.0.1";
+    private static final int PORT = 8000;
 
     public static void main(String[] args) {
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -32,14 +35,15 @@ public class NettyClient {
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true)
                 // IO 处理逻辑
-                .handler(new ChannelInitializer<NioSocketChannel>() {
+                .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
-                    protected void initChannel(NioSocketChannel ch) {
+                    protected void initChannel(SocketChannel ch) {
+                        ch.pipeline().addLast(new FirstClientHandler());
                     }
                 });
 
         // 建立连接
-        connect(bootstrap, "localhost", 80, MAX_RETRY);
+        connect(bootstrap, HOST, PORT, MAX_RETRY);
     }
 
     private static void connect(Bootstrap bootstrap, String host, int port, int retry) {
