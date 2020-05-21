@@ -22,9 +22,9 @@ public class ConnectRunner implements ApplicationRunner {
         WebSocketStompClient stompClient = new WebSocketStompClient(client);
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
         StompSessionHandler sessionHandler = new MyStompSessionHandler();
-        StompSession session = stompClient.connect("ws://localhost:9000/websocket?token=123", sessionHandler).get();
+        StompSession session = stompClient.connect("ws://localhost:9002/websocket?token=456", sessionHandler).get();
 
 
-        new Scanner(System.in).nextLine();
+//        new Scanner(System.in).nextLine();
     }
 }
