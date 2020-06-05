@@ -43,6 +43,20 @@ public class HelloWorldClient {
         logger.info("Greeting: " + response.getMessage());
     }
 
+    /**say hello again to server */
+    public void greetAgain(String name) {
+        logger.info("Will try to greet again " + " ...");
+        HelloRequest request = HelloRequest.newBuilder().setName(name).build();
+        HelloReply response;
+        try {
+            response = blockingStub.sayHelloAgain(request);
+        } catch (StatusRuntimeException e) {
+            logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            return;
+        }
+        logger.info("Greeting: " + response.getMessage());
+    }
+
     /**
      * Greet server. If provided, the first element of {@code args} is the name to use in the
      * greeting. The second argument is the target server.
@@ -77,6 +91,7 @@ public class HelloWorldClient {
         try {
             HelloWorldClient client = new HelloWorldClient(channel);
             client.greet(user);
+            client.greetAgain(user);
         } finally {
             // ManagedChannels use resources like threads and TCP connections. To prevent leaking these
             // resources the channel should be shut down when it will no longer be used. If it may be used
